@@ -6,8 +6,12 @@ import axios from 'axios';
 // axios.defaults.baseURL = API_BASE_URL;
 // const API_BASE_URL = '/api';
 // axios.defaults.baseURL = API_BASE_URL;
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://98.94.77.253:30080/api';
+// استخدم المتغير من window._env_ اللي هيتحط في runtime
+const API_BASE_URL = window._env_?.API_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 axios.defaults.baseURL = API_BASE_URL;
+
+// اطبع القيمة للتأكد
+console.log('API Base URL:', API_BASE_URL);
 
 
 const AuthContext = createContext();
