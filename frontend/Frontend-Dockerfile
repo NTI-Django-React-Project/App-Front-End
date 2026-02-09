@@ -14,6 +14,9 @@ RUN npm run build
 # ---- Production Stage ----
 FROM nginx:alpine
 
+# Install gettext for envsubst
+RUN apk add --no-cache gettext
+
 # Copy built static files from build stage to Nginx public dir
 COPY --from=build /app/build /usr/share/nginx/html
 
@@ -21,18 +24,14 @@ COPY --from=build /app/build /usr/share/nginx/html
 RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
     echo 'set -e' >> /docker-entrypoint.sh && \
     echo '' >> /docker-entrypoint.sh && \
-    echo '# Check if env-config.js exists' >> /docker-entrypoint.sh && \
     echo 'if [ -f /usr/share/nginx/html/env-config.js ]; then' >> /docker-entrypoint.sh && \
-    echo '  echo "Substituting environment variables in env-config.js..."' >> /docker-entrypoint.sh && \
+    echo '  echo "Substituting environment variables..."' >> /docker-entrypoint.sh && \
     echo '  envsubst '\''$API_URL'\'' < /usr/share/nginx/html/env-config.js > /usr/share/nginx/html/env-config.js.tmp' >> /docker-entrypoint.sh && \
     echo '  mv /usr/share/nginx/html/env-config.js.tmp /usr/share/nginx/html/env-config.js' >> /docker-entrypoint.sh && \
-    echo '  echo "Environment variables substituted successfully"' >> /docker-entrypoint.sh && \
+    echo '  echo "Result:"' >> /docker-entrypoint.sh && \
     echo '  cat /usr/share/nginx/html/env-config.js' >> /docker-entrypoint.sh && \
-    echo 'else' >> /docker-entrypoint.sh && \
-    echo '  echo "Warning: env-config.js not found!"' >> /docker-entrypoint.sh && \
     echo 'fi' >> /docker-entrypoint.sh && \
     echo '' >> /docker-entrypoint.sh && \
-    echo '# Start nginx' >> /docker-entrypoint.sh && \
     echo 'exec nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
     chmod +x /docker-entrypoint.sh
 
