@@ -7,11 +7,11 @@ import axios from 'axios';
 // const API_BASE_URL = '/api';
 // axios.defaults.baseURL = API_BASE_URL;
 // استخدم المتغير من window._env_ اللي هيتحط في runtime
-const API_BASE_URL = window._env_?.API_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = '/api';
 axios.defaults.baseURL = API_BASE_URL;
 
 // اطبع القيمة للتأكد
-console.log('API Base URL:', API_BASE_URL);
+console.log('🔗 API Base URL:', API_BASE_URL);
 
 
 const AuthContext = createContext();
